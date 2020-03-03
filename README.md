@@ -23,4 +23,5 @@ Nesta Seção estarão Datasets exportados do Kaggle, onde realzaremos algumas a
    
 ### Modelos_De_Previsão
 Nesta seção buscaremos criar alguns modelos de previsão baseados em alguma análise prévia, utilizaremos o R e Python.
+   
    1 - R (Adicionar modelo econometria)
