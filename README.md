@@ -11,7 +11,7 @@ Aos poucos vou aumentando a Bio e colocando os trabalhos realizados!
 
 # Índice:
 
-### Data Viz
+## Data Viz
 Nesta Seção estarão alguns datasets onde busco responder algumas perguntas, através da visualização de bases de dados pelo PowerBI:
    
 ### • Suicide Rates VS World Happiness Report
