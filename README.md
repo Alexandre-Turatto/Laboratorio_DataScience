@@ -17,9 +17,11 @@ Nesta Seção estarão alguns datasets onde busco responder algumas perguntas, a
    1 - Suicide Rates VS World Happiness Report
 
 ### Kaggle_Datasets
-Nesta Seção estarão Datasets exportados do Kaggle, onde realzaremos algumas análises exploratórias. 
+Nesta Seção estarão Datasets exportados do Kaggle, onde realzaremos algumas análises!
    
    1 - AirBnb - Análise Exploratória dos dados
+   
+   2 - Detecção de Fraudes em bancos
    
 ### Modelos_De_Previsão
 Nesta seção buscaremos criar alguns modelos de previsão baseados em alguma análise prévia, utilizaremos o R e Python.
