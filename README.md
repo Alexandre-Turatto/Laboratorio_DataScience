@@ -19,9 +19,9 @@ Nesta Seção estarão alguns datasets onde busco responder algumas perguntas, a
 ### Kaggle_Datasets
 Nesta Seção estarão Datasets exportados do Kaggle, onde realzaremos algumas análises!
    
-   1 - AirBnb - Análise Exploratória dos dados
+   • Rio de Janeiro AirBnb - Análise Exploratória dos dados
    
-   2 - Detecção de Fraudes em bancos
+   • Detecção de Fraudes em bancos - Machine Learning semi-supervisionado
    
 ### Modelos_De_Previsão
 Nesta seção buscaremos criar alguns modelos de previsão baseados em alguma análise prévia, utilizaremos o R e Python.
