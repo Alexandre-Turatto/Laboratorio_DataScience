@@ -1,6 +1,6 @@
 # Laboratorio_DataScience
 
-##### Ongoing
+# Ongoing
 
 Aqui estão meus experimentos em DS, motivados pela curiosidade!
 
@@ -26,7 +26,7 @@ Aqui estão Datasets exportados do Kaggle, onde realzaremos algumas análises!
    
 ###   • Detecção de Fraudes em bancos - Machine Learning semi-supervisionado
 
-###   • Bank Churns - Qual a probabilidade de um cliente deixar de ser cliente?
+###   • Bank Churners - Qual a probabilidade de um cliente deixar de ser cliente?
    
 ## Modelos_De_Previsão
 Buscaremos criar alguns modelos de previsão baseados em alguma análise prévia, utilizaremos o R e Python.
