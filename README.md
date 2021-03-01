@@ -1,4 +1,7 @@
 # Laboratorio_DataScience
+
+##### Ongoing
+
 Aqui estão meus experimentos em DS, motivados pela curiosidade!
 
 ![Laboratório](https://github.com/Alexandre-Turatto/Laboratorio_DataScience/blob/master/Lab.gif)
@@ -22,8 +25,14 @@ Aqui estão Datasets exportados do Kaggle, onde realzaremos algumas análises!
 ###   • Rio de Janeiro AirBnb - Análise Exploratória dos dados
    
 ###   • Detecção de Fraudes em bancos - Machine Learning semi-supervisionado
+
+###   • Bank Churns - Qual a probabilidade de um cliente deixar de ser cliente?
    
 ## Modelos_De_Previsão
 Buscaremos criar alguns modelos de previsão baseados em alguma análise prévia, utilizaremos o R e Python.
    
-###   •  R (Adicionar modelo econometria)
+###   •  R (Adicionar modelo - econometria)
+
+## Matriz de Insumo-produto - Uma análise do teto de gastos
+
+##    •  Adicionar o TCC
