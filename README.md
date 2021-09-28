@@ -2,8 +2,6 @@
 
 # Ongoing
 
-Aqui estão meus experimentos em DS, motivados pela curiosidade!
-
 ![Laboratório](https://github.com/Alexandre-Turatto/Laboratorio_DataScience/blob/master/Lab.gif)
 
 Sinta-se livre para me enviar sugestões, questões ou simplesmente bater um papo!
@@ -32,7 +30,3 @@ Aqui estão Datasets exportados do Kaggle, onde realzaremos algumas análises!
 Buscaremos criar alguns modelos de previsão baseados em alguma análise prévia, utilizaremos o R e Python.
    
 ###   •  R (Adicionar modelo - econometria)
-
-## Matriz de Insumo-produto - Uma análise do teto de gastos
-
-##    •  Adicionar o TCC
