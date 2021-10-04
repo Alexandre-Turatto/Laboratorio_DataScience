@@ -29,4 +29,4 @@ Aqui estão Datasets exportados do Kaggle, onde realzaremos algumas análises!
 ## Modelos_De_Previsão
 Buscaremos criar alguns modelos de previsão baseados em alguma análise prévia, utilizaremos o R e Python.
    
-###   •  R (Adicionar modelo - econometria)
+###   •  Machine Learning aplicado em previsões de insuficiência Cardíaca (R)
