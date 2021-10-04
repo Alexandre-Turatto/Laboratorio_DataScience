@@ -1,0 +1,261 @@
+---
+title: "Machine Learning aplicado em previsões de insuficiência cardíaca"
+author: "Alexandre Turatto Henrique"
+date: "28/09/2021"
+output: 
+  pdf_document: 
+    latex_engine: lualatex
+---
+
+```{r include=FALSE}
+library(tinytex)
+library(rmarkdown)
+library(dplyr)
+library(plyr)
+library(corrplot)
+library(ggplot2)
+library(gridExtra)
+library(ggthemes)
+library(caret)
+library(MASS)
+library(randomForest)
+library(party)
+library(readr)
+library(tidyverse)
+library(patchwork)
+library(skimr)
+
+```
+
+Para esse projeto, usaremos um Dataset disponibilizado por Davide Chicco, no Kaggle.
+
+A ideia é descobrir, através de machine learning, a chance de um paciente sobreviver a uma insuficiência cardíaca,
+utilizando apenas como variáveis a Creatinina Sérica no sangue e o Percentual de sangue saindo do coração por contração.
+
+A fonte desse estudo está disponibilizada abaixo:
+
+Dataset from Davide Chicco, Giuseppe Jurman: Machine learning can predict survival of patients with heart failure from serum creatinine and ejection fraction alone. BMC Medical Informatics and Decision Making 20, 16 (2020)
+
+https://bmcmedinformdecismak.biomedcentral.com/articles/10.1186/s12911-020-1023-5
+
+
+# Agora, vamos entender as colunas do Dataset:
+
+• Age: Idade
+
+• Anaemia: Redução de Glóbulos Vermelhos (Hemoglobina)
+
+• Diabetes: Se o paciente tem diabetes ou não
+
+• creatinine_phosphokinase: Nível da enzima CPK no sangue (mcg/L)
+
+• ejection_fraction: Percentual de sangue saindo do coração a cada Contração
+
+• high_blood_pressure: Se o paciente é Hipertenso
+
+• platelets: Plaquetas no sangue (Kiloplatelets/mL)
+
+• serum_creatinine: Nível de creatinina sérica no sangue (mg/dL)
+
+• serum_sodium: Level of serum sodium in the blood (mEq/L)
+
+• sex: 1 Masculino, 0 Feminino
+
+• smoking: Fumante ou não
+
+• time: Período de acompanhamento(Follow-Up) em dias
+
+• DEATH_EVENT: Se o paciente faleceu durante o período de acompanhamento
+
+
+## Vamos começar o processo de limpeza do dataset e classificar as colunas
+## adequadamente, respeitando as características das variáveis.
+
+
+
+```{r echo=FALSE}
+setwd("C:\\ScriptsR\\heart_failure")
+
+library(readr)
+
+heart_failure_clinical_records_dataset <- read_csv("heart_failure_clinical_records_dataset.csv", 
+                                                   col_types = cols(age = col_number(), 
+                                                                    anaemia = col_logical(), creatinine_phosphokinase = col_number(), 
+                                                                    diabetes = col_logical(), ejection_fraction = col_number(), 
+                                                                    high_blood_pressure = col_logical(), 
+                                                                    platelets = col_number(), serum_creatinine = col_number(), 
+                                                                    serum_sodium = col_number(), sex = col_logical(), 
+                                                                    smoking = col_logical(), time = col_number(), 
+                                                                    DEATH_EVENT = col_logical()))
+View(heart_failure_clinical_records_dataset)
+df <- heart_failure_clinical_records_dataset
+
+df$anaemia = as.factor(df$anaemia)
+df$diabetes = as.factor(df$diabetes)
+df$high_blood_pressure = as.factor(df$high_blood_pressure)
+df$sex = as.factor(df$sex)
+df$smoking = as.factor(df$smoking)
+df$DEATH_EVENT = as.logical(df$DEATH_EVENT)
+
+```
+
+
+```{r}
+
+skim(df)
+
+```
+
+  Agora iremos fazer uma análise dos outliers das variáveis numéricas do modelo, com o intuito de entender melhor
+a distribuição sem a interferência de valores extremos.
+Como a escala das variáveis é bem diferente, optei por plotar um a um para facilitar a visualização.
+
+```{r, out.width="200px", out.height="400px"}
+boxplot(df$age, main = "Idade")
+```
+
+A variável age não possui outliers.
+
+```{r, out.width="200px", out.height="400px"}
+boxplot(df$creatinine_phosphokinase, main = "Creatinina Fosfoquinase")
+# A variável creatinine_phosphokinase possui outliers, então vamos retira-los para 
+# entender melhor as correlações.
+
+df = df %>% 
+  filter(creatinine_phosphokinase <= 1300)
+boxplot(df$creatinine_phosphokinase, main = "Creatinina Fosfoquinase")
+```
+
+Ajustado.
+
+```{r, out.width="200px", out.height="400px"}
+boxplot(df$ejection_fraction, main = "Fração de Ejeção por contração")
+
+# Mesma coisa aqui.
+df = df %>%
+  filter(ejection_fraction <= 66)
+boxplot(df$ejection_fraction, main = "Fração de Ejeção por contração")
+
+# Ejection_fraction Limpo.
+
+boxplot(df$platelets, main = "Plaquetas")
+# A variável Plaquetas também
+df = df %>%
+  filter(platelets>=1e+05)
+df = df %>%
+  filter(platelets<=4.1e+05)
+boxplot(df$platelets, main = "Plaquetas")
+# Platelets Limpo.
+
+boxplot(df$serum_sodium, main = "Sódio Sérico")
+# Aqui também
+df = df%>%
+  filter(serum_sodium >=125)
+boxplot(df$serum_sodium, main = "Sódio Sérico")
+# serum_sodium Limpo.
+
+# Após essas transformações, vamos entender o resumo dos nossos dados:
+summary(df)
+
+# Estamos trabalhando com um dataset que possui 243 registros e 13 colunas.
+```
+
+# Vamos agora fazer um gráfico para ilustrar qual a correlação dentre as variáveis que são numéricas:
+
+```{r, out.width="400px", out.height="400px"}
+numeric.var <- sapply(df, is.numeric)
+corr.matrix <- cor(df[,numeric.var])
+corrplot(corr.matrix, main="\n\nGráfico de Correlação para Variáveis Numéricas", method="number")
+```
+
+Agora vamos analisar cada uma das variáveis categóricas:
+
+```{r, out.width="400px", out.height="400px" ,echo = FALSE}
+## Gráficos
+
+g1 <- ggplot(df, aes(x=sex)) + ggtitle("1 Masculino, 0 Feminino") + xlab("Sexo") +
+  geom_bar(aes(y = 100*(..count..)/sum(..count..)), width = 0.5) + ylab("Percentual") + coord_flip() + theme_minimal()
+
+g2 <- ggplot(df, aes(x=anaemia)) + ggtitle("Anemia") + xlab("Anemia") + 
+  geom_bar(aes(y = 100*(..count..)/sum(..count..)), width = 0.5) + ylab("Percentual") + coord_flip() + theme_minimal()
+
+g3 <- ggplot(df, aes(x=diabetes)) + ggtitle("Diabetes") + xlab("Diabetes") + 
+  geom_bar(aes(y = 100*(..count..)/sum(..count..)), width = 0.5) + ylab("Percentual") + coord_flip() + theme_minimal()
+
+g4 <- ggplot(df, aes(x=high_blood_pressure)) + ggtitle("Pressão Alta") + xlab("Pressão Alta") + 
+  geom_bar(aes(y = 100*(..count..)/sum(..count..)), width = 0.5) + ylab("Percentual") + coord_flip() + theme_minimal()
+
+g5 <- ggplot(df, aes(x=smoking)) + ggtitle("Fumante") + xlab("Fumante") + 
+  geom_bar(aes(y = 100*(..count..)/sum(..count..)), width = 0.5) + ylab("Percentual") + coord_flip() + theme_minimal()
+
+g6 <- ggplot(df, aes(x=DEATH_EVENT)) + ggtitle("Falecimentos") + xlab("Falecimentos") + 
+  geom_bar(aes(y = 100*(..count..)/sum(..count..)), width = 0.5) + ylab("Percentual") + coord_flip() + theme_minimal()
+
+
+g1 + g2 + g3+ g4 + g5 + g6
+```
+
+Com os dados devidamente tratados, podemos iniciar a modelagem preditiva.
+
+# Modelagem preditiva
+## Primeiro, dividimos os dados em conjuntos de treinamento e testes
+
+```{r}
+intrain <- createDataPartition(df$DEATH_EVENT,p=0.7,list=FALSE)
+set.seed(2021)
+training <- df[intrain,]
+testing <- df[-intrain,]
+```
+
+Confirmando se a divisão está correta:
+
+```{r}
+dim(df)
+dim(training); dim(testing)
+# Conforme o esperado, treino corresponde a 70% do dataset e teste 30%
+```
+
+# Criando um modelo de regressão logística:
+
+```{r}
+LogModel <- glm(DEATH_EVENT ~ ., family=binomial(link="logit"), data=training)
+anova(LogModel, test="Chisq")
+```
+
+# As variáveis mais relevantes são: age, ejection_fraction , serum_creatinine, time        
+
+# Testando a Regressão logística no dataset de testes:
+
+```{r}
+testing$DEATH_EVENT <- as.logical(testing$DEATH_EVENT)
+fitted.results <- predict(LogModel,newdata=testing,type='response')
+fitted.results <- ifelse(fitted.results > 0.5,1,0)
+misClasificError <- mean(fitted.results != testing$DEATH_EVENT)
+print(paste('Logistic Regression Accuracy',1-misClasificError))
+```
+
+
+```{r}
+print("Confusion Matrix para Regressão Logística"); table(testing$DEATH_EVENT,fitted.results > 0.5)
+```
+
+# Testando Random Forest
+
+```{r}
+tree <- ctree(DEATH_EVENT ~ age + ejection_fraction + serum_creatinine ,training)
+plot(tree, type='simple')
+
+
+pred_tree <- predict(tree, testing)
+print("Confusion Matrix Para Decision Tree"); table(Predicted = pred_tree, Actual = testing$DEATH_EVENT)
+
+p1 <- predict(tree, training)
+tab1 <- table(Predicted = p1, Actual = training$DEATH_EVENT)
+tab2 <- table(Predicted = pred_tree, Actual = testing$DEATH_EVENT)
+print(paste('Decision Tree Accuracy',sum(diag(tab2))/sum(tab2)))
+```
+
+# Para este dataset, a Regressão Logística se mostrou com maior acurácia.
+
+
+# De acordo com o experimento que realizamos, podemos afirmar que as variáveis Creatinina Sérica no sangue e o Percentual de sangue saindo do coração por contração são suficientes para prever a chance do paciente de sofrer por insuficiência cardíaca com um grau de precisão de aproximadamente 80%.
