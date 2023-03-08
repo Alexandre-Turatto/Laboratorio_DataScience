@@ -4,7 +4,14 @@
 
 ![Laboratório](https://github.com/Alexandre-Turatto/Laboratorio_DataScience/blob/master/Lab.gif)
 
-Sinta-se livre para me enviar sugestões, questões ou simplesmente bater um papo!
+Bem-vindo(a) ao meu portfólio de Data Science!
+
+Aqui, você encontrará uma coleção dos meus projetos de análise de dados, modelagem estatística e machine learning, que mostram minhas habilidades e experiência na área. Acredito que os dados têm o poder de fornecer insights valiosos para ajudar a resolver problemas e tomar decisões informadas. 
+
+Cada projeto incluído neste portfólio representa um desafio único que enfrentei e a solução que desenvolvi usando técnicas de análise de dados, visualização e modelagem estatística.
+
+
+Obrigado por visitar meu portfólio e sinta-se livre para entrar em contato comigo e me enviar sugestões, questões ou simplesmente bater um papo!
 
 Linkedin: https://www.linkedin.com/in/alexandre-turatto-279654a3/
 
